@@ -1,0 +1,61 @@
+{
+	"name": "ds_mysql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MySql1",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"ServerName": {
+					"value": "@dataset().ServerName",
+					"type": "Expression"
+				},
+				"UserName": {
+					"value": "@dataset().UserName",
+					"type": "Expression"
+				},
+				"PortNo": {
+					"value": "@dataset().PortNo",
+					"type": "Expression"
+				},
+				"DBName": {
+					"value": "@dataset().DBName",
+					"type": "Expression"
+				},
+				"Password": {
+					"value": "@dataset().Password",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"TableName": {
+				"type": "string"
+			},
+			"ServerName": {
+				"type": "string"
+			},
+			"PortNo": {
+				"type": "string"
+			},
+			"UserName": {
+				"type": "string"
+			},
+			"DBName": {
+				"type": "string"
+			},
+			"Password": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

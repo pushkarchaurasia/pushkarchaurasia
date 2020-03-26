@@ -1,0 +1,37 @@
+{
+	"name": "MySql1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"ServerName": {
+				"type": "string",
+				"defaultValue": "10.9.32.177"
+			},
+			"UserName": {
+				"type": "string",
+				"defaultValue": "root"
+			},
+			"PortNo": {
+				"type": "string",
+				"defaultValue": "3306"
+			},
+			"DBName": {
+				"type": "string",
+				"defaultValue": "ems_new"
+			},
+			"Password": {
+				"type": "string",
+				"defaultValue": "root"
+			}
+		},
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"connectionString": "Server=@{linkedService().ServerName};Port=@{linkedService().PortNo};Database=@{linkedService().DBName};User=@{linkedService().UserName};SSLMode=1;UseSystemTrustStore=0;Password=@{linkedService().Password}"
+		},
+		"connectVia": {
+			"referenceName": "ir-mysql",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,142 @@
+{
+	"name": "pl_parent",
+	"properties": {
+		"activities": [
+			{
+				"name": "LKP_Config_File_TableName",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "FLTR_Active_TableName",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "LKP_Config_File_TableName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LKP_Config_File_TableName').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().IsActive,'1')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "FE_Config_Table",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FLTR_Active_TableName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FLTR_Active_TableName').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "EXPL_pl_incremental_load_db_adl",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_incremental_load_db_adl",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"TableName": {
+										"value": "@item().TableName",
+										"type": "Expression"
+									},
+									"IncrementalStatus": {
+										"value": "@item().IncrementalStatus",
+										"type": "Expression"
+									},
+									"IsActive": {
+										"value": "@item().IsActive",
+										"type": "Expression"
+									},
+									"ServerName": {
+										"value": "@item().ServerName",
+										"type": "Expression"
+									},
+									"PortNo": {
+										"value": "@item().PortNo",
+										"type": "Expression"
+									},
+									"DBName": {
+										"value": "@item().DBName",
+										"type": "Expression"
+									},
+									"UserName": {
+										"value": "@item().UserName",
+										"type": "Expression"
+									},
+									"SecretName": {
+										"value": "@item().SecretName",
+										"type": "Expression"
+									},
+									"ColumnName": {
+										"value": "@item().ColumnName",
+										"type": "Expression"
+									},
+									"WatermarkColumnName": {
+										"value": "@item().WatermarkColumnName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "HRMS"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

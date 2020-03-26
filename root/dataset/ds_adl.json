@@ -1,0 +1,36 @@
+{
+	"name": "ds_adl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_ADL_pocsalearning",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().TableName,'_', formatDateTime(addhours(addminutes(utcnow(),30), 5),'yyyy'),formatDateTime(addhours(addminutes(utcnow(),30), 5),'MM'),formatDateTime(addhours(addminutes(utcnow(),30), 5),'dd'),formatDateTime(addhours(addminutes(utcnow(),30), 5),'HH'),formatDateTime(addhours(addminutes(utcnow(),30), 5),'mm'),formatDateTime(addhours(addminutes(utcnow(),30), 5),'ss'),'.csv')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('HRMS/DATA','/', formatDateTime(addhours(addminutes(utcnow(),30), 5),'yyyy'),'/',formatDateTime(addhours(addminutes(utcnow(),30), 5),'MM'),'/',formatDateTime(addhours(addminutes(utcnow(),30), 5),'dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "landing"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

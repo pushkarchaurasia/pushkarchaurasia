@@ -1,0 +1,119 @@
+{
+	"name": "pl_incremental_load_db_adl",
+	"properties": {
+		"activities": [
+			{
+				"name": "cd_db_adl",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MySqlSource",
+						"query": {
+							"value": "@concat('select * from ',pipeline().parameters.TableName)",
+							"type": "Expression"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_mysql",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": {
+								"value": "@pipeline().parameters.TableName",
+								"type": "Expression"
+							},
+							"ServerName": {
+								"value": "@pipeline().parameters.ServerName",
+								"type": "Expression"
+							},
+							"PortNo": {
+								"value": "@pipeline().parameters.PortNo",
+								"type": "Expression"
+							},
+							"UserName": {
+								"value": "@pipeline().parameters.UserName",
+								"type": "Expression"
+							},
+							"DBName": {
+								"value": "@pipeline().parameters.DBName",
+								"type": "Expression"
+							},
+							"Password": "root"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adl",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": {
+								"value": "@pipeline().parameters.TableName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"TableName": {
+				"type": "string"
+			},
+			"IncrementalStatus": {
+				"type": "string"
+			},
+			"IsActive": {
+				"type": "string"
+			},
+			"ServerName": {
+				"type": "string"
+			},
+			"UserName": {
+				"type": "string"
+			},
+			"DBName": {
+				"type": "string"
+			},
+			"PortNo": {
+				"type": "string"
+			},
+			"ColumnName": {
+				"type": "string"
+			},
+			"WatermarkColumnName": {
+				"type": "string"
+			},
+			"SecretName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "HRMS"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
